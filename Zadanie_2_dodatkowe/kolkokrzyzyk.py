@@ -50,7 +50,10 @@ def rysuj_plansze(plansza, pozostale=False):
             i+=1
         print()
 def przegrana():
-    print("Przegrałeś!!")
+    if(gracz):
+        print("Przegrałeś!!")
+    else:
+        print("Wygrałeś")
     stangry[0]=0
 rysuj_plansze(stangry)
 input("Aby zagrać naciśnij <Enter>")
@@ -88,7 +91,7 @@ while(gra):
             stangry[5] = 2
         else:
             print("Teraz kolej komputera!")
-        time.sleep(2)
+        time.sleep(1)
         warunek = True
 
         if warunek:
@@ -146,18 +149,18 @@ while(gra):
                     if ruch_gracza == 2 or ruch_gracza == 8:
                         if stangry[ruch_gracza-1] + stangry[ruch_gracza] + stangry[ruch_gracza+1] == 2:
                             test("Warunek 4a - znalazło")
-                            if stangry[ruch_gracza-1] == 1:
+                            if stangry[ruch_gracza - 1] == 1:
                                 stangry[ruch_gracza + 1] = 2
                             else:
-                                stangry[ruch_gracza + 1] = 2
+                                stangry[ruch_gracza - 1] = 2 # tu był błąd
                             warunek = False
                     else:
                         if stangry[ruch_gracza-3] + stangry[ruch_gracza] + stangry[ruch_gracza+3] == 2:
                             test("Warunek 4b - znalazło")
-                            if stangry[ruch_gracza-3] == 1:
+                            if stangry[ruch_gracza - 3] == 1:
                                 stangry[ruch_gracza + 3] = 2
                             else:
-                                stangry[ruch_gracza + 3] = 2
+                                stangry[ruch_gracza - 3] = 2 # tu był błąd
                             warunek = False
                 else:
                     if ruch_gracza % 3 == 0:
@@ -166,7 +169,7 @@ while(gra):
                             if stangry[ruch_gracza - 1] == 1:
                                 stangry[ruch_gracza - 2] = 2
                             else:
-                                stangry[ruch_gracza - 2] = 2
+                                stangry[ruch_gracza - 1] = 2 # tu był błąd
                             warunek = False
                     else:
                         if stangry[ruch_gracza+1] + stangry[ruch_gracza] + stangry[ruch_gracza+2] == 2:
@@ -174,7 +177,7 @@ while(gra):
                             if stangry[ruch_gracza + 1] == 1:
                                 stangry[ruch_gracza + 2] = 2
                             else:
-                                stangry[ruch_gracza + 2] = 2
+                                stangry[ruch_gracza + 1] = 2 # tu był błąd
                             warunek = False
                     if warunek:
                         test("Warunek 5 - sprawdzanie")
