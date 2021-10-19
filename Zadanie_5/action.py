@@ -1,6 +1,6 @@
 class Account:
     def __init__(self, path):
-        self.path = path
+        self.PATH = path
         self.saldo_kwota = 0
         self.zapis_zdarzen = []
         self.stan_magazynowy = {}
@@ -64,7 +64,7 @@ class Account:
             return False
 
     def import_db(self, tryb='r'):
-        with open(self.path, tryb) as file:
+        with open(self.PATH, tryb) as file:
             status = True
             while status:
                 act = file.readline()
@@ -105,7 +105,7 @@ class Account:
         print("stop")
 
     def update_db(self):
-        with open(self.path, 'w') as file:
+        with open(self.PATH, 'w') as file:
             for line in self.zapis_zdarzen:
                 for b in line.values():
                     if type(b) is tuple:
