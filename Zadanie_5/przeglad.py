@@ -6,6 +6,3 @@ file_path = sys.argv[1]
 konto = Account(file_path)
 if konto.import_db():
     konto.przeglad()
-
-# Pusty komentarz aby odsiwrzyć pliki
-print()

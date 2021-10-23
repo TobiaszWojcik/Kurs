@@ -11,6 +11,3 @@ if konto.import_db():
     if konto.sprzedaz(ident, price, quantity):
         konto.przeglad()
         konto.update_db()
-
-# Pusty komentarz aby odsiwrzyć pliki
-print()

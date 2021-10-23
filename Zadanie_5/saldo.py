@@ -10,6 +10,3 @@ if konto.import_db():
     if konto.saldo(value, comment):
         konto.przeglad()
         konto.update_db()
-
-# Pusty komentarz aby odsiwrzyć pliki
-print()
