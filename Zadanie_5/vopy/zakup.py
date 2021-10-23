@@ -8,9 +8,6 @@ quantity = int(sys.argv[4])
 
 konto = Account(file_path)
 if konto.import_db():
-    if konto.sprzedaz(ident, price, quantity):
+    if konto.zakup(ident, price, quantity):
         konto.przeglad()
         konto.update_db()
-
-# Pusty komentarz aby odsiwrzyć pliki
-print()
