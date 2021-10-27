@@ -12,6 +12,6 @@ for change in sys.argv[3:]:
 openfile = FileHandler()
 content = (openfile.loadfile(path_in))
 if content:
-    swipe_content(content, changes)
+    content = swipe_content(content, changes)
     csv_print(content)
     openfile.savefile(content, path_out)
