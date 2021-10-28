@@ -26,7 +26,6 @@ def csv_print(file, spacer=", "):
 def swipe_content(content, changes):
     max_row = len(content)
     max_col = len(content[0])
-    print(max_row, max_col)
     for change in changes:
         if max_row > int(change[0]) and max_col > int(change[1]):
             content[int(change[0])][int(change[1])] = change[2]
@@ -65,6 +64,5 @@ class FileHandler:
         self.path_out = path_out
         check_dir_exist(path_out, True)
         final_dir = os.path.join(self.path_out, self.filename)
-        print(final_dir)
         with open(final_dir, 'w') as file:
             csv.writer(file).writerows(content)

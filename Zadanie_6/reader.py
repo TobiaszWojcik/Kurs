@@ -11,7 +11,6 @@ if os.path.isfile(path_in):
     path_out = sys.argv[2]
     changes = []
     dirout = check_dir_exist(path_out, True)
-    print(dirout, "to wyszlo")
     for change in sys.argv[3:]:
         changes.append(change.split(","))
     openfile = FileHandler()
