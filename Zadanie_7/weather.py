@@ -3,7 +3,6 @@ import sys
 import datetime
 import requests
 import json
-from pprint import pprint
 
 
 class HistoryHendler:
@@ -71,11 +70,7 @@ else:
     else:
         precipitation = [False]
 
-
-
 # W przypadku pogody na przyszłość api pobiera 15 dni w przód i trzeba odfiltrować odpowiedni dzień
-
-
 
 if precipitation[0]:
     print("Będzie padać" if float(precipitation[1]) > 0.0 else "Nie będzie padać")
