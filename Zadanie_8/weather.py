@@ -47,7 +47,7 @@ class WeatherForcast:
     def items(self):
         for key, element in self.__history.get_history().items():
             element = "Będzie padać " if float(element) > 0.0 else "Nie będzie padać"
-            yield tuple([key,element])
+            yield tuple([key, element])
 
     def __getitem__(self, date):
         precipitation = self.__history.load_history(date)
@@ -71,8 +71,7 @@ class WeatherForcast:
                         precipitation = [True, values.get('precip')]
                         self.__history.save_history(date, precipitation[1])
                         break
-        print("Nie Wiem" if not precipitation[0] else "Będzie padać" if float(precipitation[1]) > 0.0
-                else "Nie będzie padać")
+        print("Nie Wiem" if not precipitation[0] else "Będzie padać" if float(precipitation[1]) > 0.0 else "Nie będzie padać")
 
     def __iter__(self):
         return iter(self.__history.get_history().keys())
@@ -87,7 +86,6 @@ except IndexError:
 
 wf = WeatherForcast(key)
 print("wf[data]")
-wf[day]debilek3
 print()
 print("wf.items()")
 for cos in wf.items():
