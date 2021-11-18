@@ -1,5 +1,8 @@
 import csv
 import os
+import json
+import pickle
+import pprint
 
 
 # Funkcja rekurencyjna sprawdza w dół ostatni istniejący folder i zwraca jego pozycję.
@@ -39,18 +42,28 @@ class FileHandler:
     def __init__(self):
         self.path_in = ""
         self.path_out = ""
-        self.filename = ""
+        self.filename_in = ""
+        self.filename_out = ""
 
     # Metoda odczytu pliku csv, zwraca listę lub False w przypadku braku pliku
     def loadfile(self, path_in):
         self.path_in = path_in
-        self.filename = os.path.basename(path_in)
+        self.filename_in = os.path.basename(path_in)
         content = []
         if os.path.exists(self.path_in):
-            with open(self.path_in, 'r') as file:
-                temp = csv.reader(file, skipinitialspace=True)
-                for row in temp:
-                    content.append(row)
+            file_extensions = self.filename_in.split('.')[-1]
+            open_mode = "rb" if file_extensions == "pickle" else "r"
+            with open(self.path_in, open_mode) as file:
+                if file_extensions == 'csv':
+                    temp = csv.reader(file, skipinitialspace=True)
+                    for row in temp:
+                        content.append(row)
+                elif file_extensions == 'pickle':
+                    content = pickle.load(file)
+                elif file_extensions == 'json':
+                    temp = json.load(file)
+                    for kol in temp.get(list(temp.keys())[0]):
+                        content.append(kol)
             return content
         else:
             print('Brak pliku o podanej nazwie: "{}"'.format(self.path_in))
@@ -59,10 +72,17 @@ class FileHandler:
 
     # Metoda zapisu pliku
     def savefile(self, content, path_out=None):
-        if path_out is None:
-            path_out = self.path_in
-        self.path_out = path_out
-        check_dir_exist(path_out, True)
-        final_dir = os.path.join(self.path_out, self.filename)
-        with open(final_dir, 'w') as file:
-            csv.writer(file).writerows(content)
+        self.path_out = os.path.dirname(path_out)
+        self.filename_out = os.path.basename(path_out)
+        check_dir_exist(self.path_out, True)
+        final_dir = os.path.join(self.path_out, self.filename_out)
+        file_extension = self.filename_out.split(".")[-1]
+        open_mode = "wb" if file_extension == "pickle" else "w"
+        with open(final_dir, open_mode) as file:
+            if file_extension == "csv":
+                csv.writer(file).writerows(content)
+            elif file_extension == "pickle":
+                pickle.dump(content, file)
+            elif file_extension == "json":
+                save = {'value': content}
+                json.dump(save, file)
