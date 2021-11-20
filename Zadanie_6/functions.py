@@ -2,87 +2,97 @@ import csv
 import os
 import json
 import pickle
-import pprint
 
 
-# Funkcja rekurencyjna sprawdza w dół ostatni istniejący folder i zwraca jego pozycję.
-# Parametr create decyduje czy funkcja tworzy podfoldery aż do pierwotnie podanej lokalizacji
-def check_dir_exist(path, create=False):
-    pathabs = os.path.abspath(path)
-    if not os.path.isdir(pathabs):
-        dip = check_dir_exist(os.path.split(path)[0], create)
-        if create:
-            if not os.path.split(path)[1] == "":
-                os.mkdir(path)
-        return dip
+class ListHendler:
+    def __init__(self, content):
+        self.content = content
 
-    return pathabs
+    def print_list(self, spacer=", "):
+        for row in self.content:
+            print(spacer.join(row))
 
-
-# Funkcja drukująca zawartość listy
-def csv_print(file, spacer=", "):
-    for row in file:
-        print(spacer.join(row))
-
-
-# Funkcja zmieniająca zawartość kolumny w liście
-def swipe_content(content, changes):
-    max_row = len(content)
-    max_col = len(content[0])
-    for change in changes:
-        if max_row > int(change[0]) and max_col > int(change[1]):
-            content[int(change[0])][int(change[1])] = change[2]
-        else:
-            print("Brak możliwość zmiany komurki {}x{} na wartość:{}".format(change[0], change[1], change[2]))
-    return content
+    def swipe_content(self, changes):
+        max_row = len(self.content)
+        max_col = len(self.content[0])
+        for change in changes:
+            if len(change)>2:
+                if max_row > int(change[0]) and max_col > int(change[1]):
+                    self.content[int(change[0])][int(change[1])] = change[2]
+                else:
+                    print("Brak możliwość zmiany komurki {}x{} na wartość:{}".format(change[0], change[1], change[2]))
+            else:
+                print("Nie podano wszystkich parametrów do zmiany")
+        return self.content
 
 
-# Klasa obsługująca wczytywanie oraz zapis pliku csv
 class FileHandler:
-    def __init__(self):
-        self.path_in = ""
-        self.path_out = ""
-        self.filename_in = ""
-        self.filename_out = ""
+    def __init__(self, open_mode=""):
+        self.open_mode = open_mode
 
-    # Metoda odczytu pliku csv, zwraca listę lub False w przypadku braku pliku
-    def loadfile(self, path_in):
-        self.path_in = path_in
-        self.filename_in = os.path.basename(path_in)
+    def loadfile(self, path):
+        open_mode = 'r' + str(self.open_mode)
+        with open(path, open_mode) as file:
+            content = self.file_loader(file)
+        return content
+
+    def savefile(self, path, content):
+        open_mode = 'w'+str(self.open_mode)
+        with open(path, open_mode) as file:
+            self.file_saver(file, content)
+
+
+class CsvHandler(FileHandler):
+    def file_saver(self, file, content):
+        csv.writer(file).writerows(content)
+
+    def file_loader(self, file):
+        temp = csv.reader(file, skipinitialspace=True)
         content = []
-        if os.path.exists(self.path_in):
-            file_extensions = self.filename_in.split('.')[-1]
-            open_mode = "rb" if file_extensions == "pickle" else "r"
-            with open(self.path_in, open_mode) as file:
-                if file_extensions == 'csv':
-                    temp = csv.reader(file, skipinitialspace=True)
-                    for row in temp:
-                        content.append(row)
-                elif file_extensions == 'pickle':
-                    content = pickle.load(file)
-                elif file_extensions == 'json':
-                    temp = json.load(file)
-                    for kol in temp.get(list(temp.keys())[0]):
-                        content.append(kol)
-            return content
-        else:
-            print('Brak pliku o podanej nazwie: "{}"'.format(self.path_in))
+        for row in temp:
+            content.append(row)
+        return content
 
-            return False
 
-    # Metoda zapisu pliku
-    def savefile(self, content, path_out=None):
-        self.path_out = os.path.dirname(path_out)
-        self.filename_out = os.path.basename(path_out)
-        check_dir_exist(self.path_out, True)
-        final_dir = os.path.join(self.path_out, self.filename_out)
-        file_extension = self.filename_out.split(".")[-1]
-        open_mode = "wb" if file_extension == "pickle" else "w"
-        with open(final_dir, open_mode) as file:
-            if file_extension == "csv":
-                csv.writer(file).writerows(content)
-            elif file_extension == "pickle":
-                pickle.dump(content, file)
-            elif file_extension == "json":
-                save = {'value': content}
-                json.dump(save, file)
+class JSONHandler(FileHandler):
+    def file_saver(self, file, content):
+        json.dump(content, file)
+
+    def file_loader(self, file):
+        content = json.load(file)
+        return content
+
+
+class PickleHandler(FileHandler):
+    def __init__(self):
+        super().__init__('b')
+
+    def file_saver(self, file, content):
+        pickle.dump(content, file)
+
+    def file_loader(self, file):
+        content = pickle.load(file)
+        return content
+
+class File_Check:
+    def __init__(self, path_to_check):
+        self.path = path_to_check
+        self.path_dir = os.path.dirname(path_to_check)
+        self.filename = os.path.basename(path_to_check)
+        self.file_extensions = self.filename.split(".")[-1]
+
+    def __repr__(self):
+        return self.path
+
+    def dir_exist(self, path, create=False):
+        pathabs = os.path.abspath(path)
+        if not os.path.isdir(pathabs):
+            dip = self.dir_exist(os.path.split(path)[0], create)
+            if create:
+                if not os.path.split(path)[1] == "":
+                    os.mkdir(path)
+            return dip
+
+    def file_exist(self):
+        return os.path.exists(self.path)
+
