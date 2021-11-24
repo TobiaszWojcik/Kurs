@@ -1,9 +1,37 @@
+class Manager:
+    def __init__(self):
+        self.actions = {}
+        self.history = ""
+        self.error = False
+
+    def assign(self, name):
+        def decorate(arg):
+            self.actions[name] = arg
+
+        return decorate
+
+    def execute(self, name):
+        if name not in self.actions:
+            print("Action not defined")
+        else:
+            return self.actions[name]()
+
+    def execute_param(self, name, params):
+        if name not in self.actions:
+            print("Action not defined")
+        else:
+            return self.actions[name](params)
+
+
 class Account:
-    def __init__(self, path):
-        self.FILE_PATH = path
+    def __init__(self):
+        self.FILE_PATH = ''
         self.saldo_kwota = 0
         self.zapis_zdarzen = []
         self.stan_magazynowy = {}
+
+    def get_file_path (self, filepath):
+        self.FILE_PATH = filepath
 
     def zapis_akcji(self, akcja, parametry):
         self.zapis_zdarzen.append({'akcja': akcja, 'parametry': tuple(parametry)})
@@ -94,8 +122,10 @@ class Account:
                 return False
         return True
 
-    def przeglad(self):
-        for line in self.zapis_zdarzen:
+    def przeglad(self, start=0, stop=0):
+        if stop == 0:
+            stop = len(self.zapis_zdarzen)
+        for line in self.zapis_zdarzen[start:stop]:
             for b in line.values():
                 if type(b) is tuple:
                     for c in b:
