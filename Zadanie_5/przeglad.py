@@ -49,11 +49,6 @@ while True:
 
 manager.execute('show_error')
 
-
-
-
-
-
 # OLD
 #
 # import sys

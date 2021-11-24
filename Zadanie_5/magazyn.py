@@ -25,6 +25,7 @@ while True:
         break
     try:
         acc.import_db()
+
         @manager.assign('magazyn_pozycje')
         def pozycje(table):
             return table
@@ -34,7 +35,7 @@ while True:
         def mag(pozycje):
             acc.magazyn(pozycje)
 
-        manager.execute_param('magazyn', (manager.execute_param('magazyn_pozycje',sys.argv[2:])))
+        manager.execute_param('magazyn', (manager.execute_param('magazyn_pozycje', sys.argv[2:])))
 
     except FileNotFoundError:
         manager.execute_param('error', "Nie udało się załadować pliku")

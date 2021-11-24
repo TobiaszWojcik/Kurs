@@ -27,7 +27,6 @@ while True:
         acc.import_db()
 
         @manager.assign('zakup')
-
         def pozycje():
             acc.zakup(sys.argv[2], int(sys.argv[3]), int(sys.argv[4]))
 
